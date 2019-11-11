@@ -674,7 +674,7 @@ class TagVersionNestedSerializer(serializers.ModelSerializer):
         fields = (
             '_id', '_index', 'name', 'type', 'create_date', 'revise_date',
             'import_date', 'start_date', 'related_tags', 'notes', 'end_date',
-            'is_leaf_node', '_source', 'masked_fields',
+            'is_leaf_node', '_source', 'masked_fields', 'security_level',
             'medium_type', 'identifiers', 'agents', 'description', 'reference_code',
             'custom_fields', 'metric', 'location', 'capacity', 'information_package',
         )
@@ -873,6 +873,7 @@ class ComponentWriteSerializer(serializers.Serializer):
     name = serializers.CharField()
     description = serializers.CharField(required=False)
     type = serializers.PrimaryKeyRelatedField(queryset=TagVersionType.objects.filter(archive_type=False))
+    security_level = serializers.IntegerField(allow_null=True, required=False, min_value=1, max_value=5)
     reference_code = serializers.CharField()
     information_package = serializers.PrimaryKeyRelatedField(
         default=None,
@@ -1066,6 +1067,7 @@ class ComponentWriteSerializer(serializers.Serializer):
 class ArchiveWriteSerializer(serializers.Serializer):
     name = serializers.CharField()
     type = serializers.PrimaryKeyRelatedField(queryset=TagVersionType.objects.filter(archive_type=True))
+    security_level = serializers.IntegerField(allow_null=True, required=False, min_value=1, max_value=5)
     structures = serializers.PrimaryKeyRelatedField(
         queryset=Structure.objects.filter(is_template=True, published=True),
         many=True,
